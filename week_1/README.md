@@ -3,6 +3,17 @@
 Small TypeScript project demonstrating Test-Driven Development for a Ticket
 Manager CLI domain.
 
+This Week 1 submission is primarily a research exercise about TDD and working
+with AI. The TypeScript/Vitest project is optional, runnable evidence for one
+small `addTicket` use case; it is not a complete CLI.
+
+## Documentation
+
+- [Week 1 documentation index](docs/README.md)
+- [TDD research index](docs/research/README.md)
+- [Three AI workflows](docs/workflows/README.md)
+- [Red–Green–Refactor iteration evidence](docs/tdd-iterations.md)
+
 ## Requirements
 
 - Node.js 22.12 or newer
@@ -39,9 +50,13 @@ pnpm typecheck
 ```text
 src/ticket.ts          Ticket model, repository, and addTicket function
 tests/ticket.test.ts   Unit tests for addTicket
+docs/README.md         Documentation index
+docs/research/         TDD research split by topic
+docs/workflows/        One file for each AI workflow
 docs/tdd-iterations.md Red-Green-Refactor evidence
 ```
 
-This repository intentionally implements only one small use case. It is
-evidence for the Week 1 research assignment, not a complete Ticket Manager
-CLI.
+The documentation records the three AI workflows used in this exercise:
+Layered Questioning, Solution Exploration, and Iterative Refinement. Separate
+research and reference files distinguish externally sourced claims from
+conclusions drawn from this demo.
