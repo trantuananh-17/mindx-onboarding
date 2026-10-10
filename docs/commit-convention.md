@@ -7,10 +7,18 @@ humans and AI coding agents.
 
 ```text
 <type>(<scope>): <description>
+
+Summary:
+- <completed change>
+- <completed change>
+
+Verification:
+- <check and result>
 ```
 
 Use one space after the colon. Write a short, imperative description without a
-trailing period.
+trailing period. The first line is the summary header; the body records the
+details needed to understand the commit later.
 
 Examples:
 
@@ -23,6 +31,55 @@ docs(week_1): split TDD research by topic
 docs(repo): add AI commit instructions
 chore(repo): update shared development settings
 ```
+
+## Required body
+
+Every commit must include a body. Leave one blank line after the header, then
+describe the completed work in enough detail that a later reviewer can
+understand the change without reopening every file.
+
+Use this default structure:
+
+```text
+feat(week_1): add ticket creation flow
+
+Summary:
+- add the command handler and title validation
+- persist new tickets through the repository interface
+- document the supported inputs and failure behavior
+
+Verification:
+- pnpm test (5 tests passed)
+- pnpm typecheck (passed)
+```
+
+The body may be a detailed paragraph instead of bullets when that communicates
+the change more clearly. Do not repeat the header without adding information.
+Mention important decisions, limitations, migrations, or breaking behavior
+when relevant.
+
+## Creating the commit
+
+Do not use `git commit -m`, including repeated `-m` flags. For AI and other
+non-interactive automation, pass the complete message through standard input:
+
+```powershell
+@'
+docs(repo): improve commit documentation
+
+Summary:
+- require detailed commit bodies
+- document non-interactive commit creation for AI agents
+
+Verification:
+- repository commit skill validation passed
+'@ | git commit -F -
+```
+
+A human working interactively may run `git commit` and write the same structure
+in the configured editor. `git commit -F <path>` is also acceptable when a
+temporary message file is already available; do not add that file to the
+repository.
 
 ## Types
 
@@ -69,8 +126,8 @@ docs(repo): define shared contribution workflow
 - Start the description with a lowercase imperative verb such as `add`, `fix`,
   `extract`, `document`, or `remove`.
 - Describe the outcome, not implementation trivia such as “update files”.
-- Add a body only when the reason, tradeoff, migration, or verification needs
-  explanation.
+- Always add a body describing completed changes. Add further explanation when
+  the reason, tradeoff, migration, or verification needs context.
 - Mark a breaking change with `!`, for example
   `feat(week_2)!: replace the ticket file format`, and explain it in the body.
 
@@ -87,7 +144,8 @@ Before committing:
 2. Exclude unrelated user changes.
 3. Run checks appropriate to the affected project.
 4. Verify the header matches the actual staged change.
-5. Commit only when the user has requested a commit.
+5. Prepare a body that lists the material changes and verification results.
+6. Commit without `-m`, and only when the user has requested a commit.
 
 Do not amend or push unless the user explicitly asks for that operation.
 

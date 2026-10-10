@@ -23,9 +23,14 @@ choosing the final message.
    changes.
 4. Write the header as `<type>(<scope>): <description>` with one space after
    the colon, an imperative description, and no trailing period.
-5. Keep one logical concern per commit. Do not stage unrelated user changes.
-6. Run relevant checks and inspect the staged diff before committing.
-7. After an explicitly requested commit, report the commit hash, header, checks,
+5. Add a body after a blank line. Under `Summary:`, list the material completed
+   changes. Under `Verification:`, list each check and its result. A detailed
+   paragraph is acceptable when it is clearer than bullets.
+6. Keep one logical concern per commit. Do not stage unrelated user changes.
+7. Run relevant checks and inspect the staged diff before committing.
+8. Do not use `git commit -m`. For non-interactive agent work, provide the full
+   message through standard input to `git commit -F -`.
+9. After an explicitly requested commit, report the commit hash, header, checks,
    and whether the worktree is clean.
 
 Examples:
@@ -35,4 +40,19 @@ feat(week_1): add ticket creation flow
 fix(week_1): reject whitespace-only titles
 refactor(week_1): separate storage from ticket logic
 docs(repo): document commit conventions for AI agents
+```
+
+Full example:
+
+```text
+fix(week_1): reject whitespace-only titles
+
+Summary:
+- normalize the submitted title before validation
+- prevent repository writes when validation fails
+- add regression coverage for whitespace-only input
+
+Verification:
+- pnpm test (passed)
+- pnpm typecheck (passed)
 ```
