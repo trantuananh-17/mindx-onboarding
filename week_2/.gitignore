@@ -1,0 +1,7 @@
+node_modules/
+.vitest/
+coverage/
+dist/
+*.log
+data/*.json
+!data/.gitkeep
