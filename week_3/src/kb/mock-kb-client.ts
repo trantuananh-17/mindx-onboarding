@@ -82,15 +82,48 @@ export class MockKBClient implements KBClient {
     return results.slice(0, topK);
   }
 
-  async list(): Promise<never> {
-    throw new Error("Not implemented");
+  async list(nodePath: string, limit: number): Promise<Document[]> {
+    const normalizedPath = nodePath.trim();
+    if (normalizedPath.length === 0) {
+      throw new ValidationError("node path is required");
+    }
+    if (!Number.isInteger(limit) || limit < 1) {
+      throw new ValidationError("limit must be a positive integer");
+    }
+
+    return this.documents
+      .filter((document) => document.nodePath === normalizedPath)
+      .slice(0, limit)
+      .map(cloneDocument);
   }
 
-  async retrieve(): Promise<never> {
-    throw new Error("Not implemented");
+  async retrieve(docId: string): Promise<Document> {
+    const document = this.documents.find((candidate) => candidate.id === docId);
+    if (!document) {
+      throw new NotFoundError(`Document ${docId} not found`);
+    }
+    return cloneDocument(document);
   }
 
-  async add(): Promise<never> {
-    throw new Error("Not implemented");
+  async add(input: AddDocumentInput): Promise<Document> {
+    const title = input.title.trim();
+    const nodePath = input.nodePath.trim();
+    if (title.length === 0) {
+      throw new ValidationError("title is required");
+    }
+    if (nodePath.length === 0) {
+      throw new ValidationError("node path is required");
+    }
+
+    const document: Document = {
+      id: `doc-${String(this.nextNumericId).padStart(3, "0")}`,
+      title,
+      content: input.content,
+      nodePath,
+      tags: [...new Set(input.tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))],
+    };
+    this.nextNumericId += 1;
+    this.documents.push(document);
+    return cloneDocument(document);
   }
 }
