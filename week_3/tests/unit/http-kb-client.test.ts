@@ -35,4 +35,42 @@ describe("HttpKBClient", () => {
     );
     expect(results[0]?.document.id).toBe("doc-001");
   });
+
+  it("chuẩn hóa kết quả search rút gọn từ API", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        Response.json({
+          results: [
+            {
+              id: "doc-001",
+              title: "Customer Response Template",
+              nodePath: "/templates/email",
+            },
+          ],
+        }),
+      ),
+    );
+
+    const client = new HttpKBClient("https://kb.example");
+    const results = await client.search("response", 1);
+
+    expect(results[0]?.matchType).toBe("title");
+    expect(results[0]?.document).toMatchObject({
+      id: "doc-001",
+      title: "Customer Response Template",
+      nodePath: "/templates/email",
+      content: "",
+    });
+  });
+
+  it("báo lỗi khi API trả status không thành công", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => Response.json({ error: "bad request" }, { status: 400 })),
+    );
+
+    const client = new HttpKBClient("https://kb.example");
+    await expect(client.retrieve("doc-001")).rejects.toThrow("bad request");
+  });
 });
