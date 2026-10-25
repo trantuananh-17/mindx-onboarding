@@ -2,12 +2,31 @@
 
 These instructions apply to the entire repository.
 
+## TDD evidence (Week 2 onward)
+
+When implementing or extending **`week_2`**, **`week_3`**, or later weekly projects, read
+[`.agents/skills/tdd-evidence/SKILL.md`](.agents/skills/tdd-evidence/SKILL.md) **before
+writing production code** for a new behavior.
+
+Requirements in short:
+
+- Red: run tests, save assertion failure log (not import/syntax noise).
+- Green: minimal code, save `git diff` hunk, run full project tests.
+- Refactor: separate step; diff must not change behavior under test.
+- Prefer **separate commits** (`test` → `feat`/`fix` → `refactor`) with `TDD evidence:` in
+  each body; update `week_N/docs/06-nhat-ky-tdd.md` for at least one verifiable cycle.
+
+Do not deliver one large `feat(week_N)` commit without logs/diffs unless the user explicitly
+asks for a single commit—and then evidence still belongs in the commit body and journal.
+
 ## Commit convention
 
 Before creating a commit, read:
 
 1. [`docs/commit-convention.md`](docs/commit-convention.md)
 2. [`.agents/skills/repository-commits/SKILL.md`](.agents/skills/repository-commits/SKILL.md)
+3. [`.agents/skills/tdd-evidence/SKILL.md`](.agents/skills/tdd-evidence/SKILL.md) when the
+   change is in a Week 2+ project using TDD
 
 Use this header format:
 

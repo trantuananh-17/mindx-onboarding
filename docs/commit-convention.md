@@ -131,6 +131,18 @@ docs(repo): define shared contribution workflow
 - Mark a breaking change with `!`, for example
   `feat(week_2)!: replace the ticket file format`, and explain it in the body.
 
+## TDD and Week 2+ projects
+
+For `week_2`, `week_3`, and later weekly folders, agents follow
+[`.agents/skills/tdd-evidence/SKILL.md`](../.agents/skills/tdd-evidence/SKILL.md):
+
+- Capture Red test logs, Green `git diff`, and Refactor comparison while working.
+- Prefer separate commits: `test(week_N)` → `feat`/`fix(week_N)` → `refactor(week_N)`.
+- Record at least one verifiable cycle in `week_N/docs/06-nhat-ky-tdd.md`.
+
+A single squashed commit is allowed only when the user asks for it; the commit body and
+journal must still include full `TDD evidence:`.
+
 ## Selecting commit boundaries
 
 A commit should represent one logical change. Split unrelated work when it has
@@ -155,3 +167,5 @@ Do not amend or push unless the user explicitly asks for that operation.
   compatible coding agents.
 - [Repository commit skill](../.agents/skills/repository-commits/SKILL.md)
   provides the decision process for agents that support skills.
+- [TDD evidence skill](../.agents/skills/tdd-evidence/SKILL.md) governs Red-Green-Refactor
+  verification for Week 2 onward.

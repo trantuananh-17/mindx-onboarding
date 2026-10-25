@@ -12,6 +12,11 @@ squash, or push.
 Read [`docs/commit-convention.md`](../../../docs/commit-convention.md) before
 choosing the final message.
 
+For **`week_2` and later** folders, read and follow
+[`.agents/skills/tdd-evidence/SKILL.md`](../tdd-evidence/SKILL.md) **during
+implementation**. Commit messages must cite evidence captured from that workflow
+(real test logs and `git diff` hunks), not after-the-fact summaries.
+
 ## Required outcome
 
 1. Inspect the actual changed or staged files and determine the change's main
@@ -65,6 +70,11 @@ TDD evidence:
 
 Do not squash Red/Green/Refactor into one commit unless the user explicitly asks for a
 single deliverable commit; monolithic history makes TDD review harder.
+
+If a single commit is required, the body **must** still include full `TDD evidence:` (Red
+log, Green diff, Refactor comparison) and the agent must update
+`week_N/docs/06-nhat-ky-tdd.md` with the same material so reviewers can verify without
+replaying Git history.
 
 Examples:
 
