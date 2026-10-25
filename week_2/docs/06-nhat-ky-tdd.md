@@ -90,3 +90,66 @@ hành vi không đổi và toàn bộ `32/32` test qua sau sửa đổi.
 
 Trường hợp này minh họa lý do Week 1 yêu cầu nhiều cấp kiểm thử: type-check và test gọi
 module trực tiếp không thay thế được việc khởi chạy tiến trình người dùng thật.
+
+## Phụ lục — Vòng TDD xác minh (tái hiện 2026-10-25)
+
+Lịch sử Git Week 2 hiện gom toàn bộ triển khai trong commit `06b3158` (31 tệp). Phần
+dưới tái hiện **một vòng Red → Green → Refactor** có thể kiểm chứng lại trên working tree,
+không cần sửa lịch sử cũ. Vòng chọn: **từ chối title không có nội dung** (C03).
+
+### Red — assertion thất bại do hành vi sai
+
+**Cách tái hiện:** tạm thời bỏ `throw` trong `normalizeTitle` khi title rỗng (ví dụ trả
+`"placeholder"`), rồi chạy:
+
+```bash
+pnpm exec vitest run tests/unit/create-ticket.test.ts -t "từ chối title không có nội dung" --reporter=verbose
+```
+
+**Log gốc (2026-10-25, exit code 1):**
+
+```text
+ × createTicket > từ chối title không có nội dung mà không thay đổi repository
+   → expected [Function] to throw an error
+
+AssertionError: expected [Function] to throw an error
+ ❯ tests/unit/create-ticket.test.ts:35:64
+     35|       expect(() => createTicket({ title }, repository, clock)).toThrow(
+     36|         "Title is required",
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 skipped (8)
+```
+
+Đây là Red do **assertion/hành vi**, không phải lỗi import hay cú pháp.
+
+### Green — khôi phục validation tối thiểu
+
+**Diff tối thiểu (khôi phục):**
+
+```diff
+   if (title.length === 0) {
+-    return "placeholder";
++    throw new ValidationError("Title is required");
+   }
+```
+
+**Log sau Green (exit code 0):**
+
+```text
+ ✓ createTicket > từ chối title không có nội dung mà không thay đổi repository
+ Test Files  1 passed (1)
+      Tests  2 passed | 6 skipped (8)
+```
+
+### Refactor — tách validation khỏi service
+
+Sau khi các test create xanh, validation được gom vào `src/domain/validation.ts`; service
+`create-ticket.ts` chỉ gọi `normalizeTitle`, `normalizeDescription`, `parsePriority`. Hành
+vi công khai không đổi; regression: `pnpm test` (42 passed tại thời điểm review).
+
+### Ghi chú Git (P3)
+
+Các lần sau nên tách commit theo hành vi (`test` → `feat` → `refactor`) thay vì một commit
+lớn. Skill commit repository đã bổ sung hướng dẫn ghi Red/Green/Refactor trong body khi
+áp dụng TDD.
