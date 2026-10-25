@@ -33,6 +33,39 @@ choosing the final message.
 9. After an explicitly requested commit, report the commit hash, header, checks,
    and whether the worktree is clean.
 
+## TDD workflow commits
+
+When the user applies Test-Driven Development, prefer **separate commits** per phase when
+practical:
+
+| Phase | Type | Scope example |
+| --- | --- | --- |
+| Red | `test` | failing test that asserts behavior (not import/syntax noise) |
+| Green | `feat` or `fix` | minimal production change to pass the new test |
+| Refactor | `refactor` | structure cleanup with tests still green |
+
+Each commit body should make the phase obvious under `Summary:` and, when helpful, under a
+`TDD evidence:` section:
+
+- **Red:** test name, command run, and the assertion or error line from Vitest (or paste a
+  short log excerpt). State that failure is expected.
+- **Green:** point to the minimal diff hunk (file + what changed), not a vague “implemented
+  feature”.
+- **Refactor:** what moved or was renamed; confirm no behavior change; cite regression
+  command result.
+
+Example Green commit body excerpt:
+
+```text
+TDD evidence:
+- Red: vitest … → AssertionError at create-ticket.test.ts:35 (Title is required)
+- Green diff: validation.ts throws ValidationError when trimmed title is empty
+- Regression: pnpm test (42 passed)
+```
+
+Do not squash Red/Green/Refactor into one commit unless the user explicitly asks for a
+single deliverable commit; monolithic history makes TDD review harder.
+
 Examples:
 
 ```text
