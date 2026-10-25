@@ -38,4 +38,40 @@ describe("KB CLI", () => {
       expect.stringContaining("Title: Customer Response Template"),
     );
   });
+
+  it("list theo node và add từ file", async () => {
+    const listed = await execute(["list", "--node", "/team/devops", "--limit", "5"]);
+    expect(listed.exitCode).toBe(0);
+    expect(listed.io.stdout).toHaveBeenCalledWith(
+      "doc-002 | DevOps On-call Schedule | /team/devops",
+    );
+
+    const filePath = join(temporaryDirectory, "new-template.md");
+    writeFileSync(
+      filePath,
+      "# SMS Alert\n\nYour package has shipped.\n",
+      "utf8",
+    );
+
+    const added = await execute([
+      "add",
+      "--file",
+      filePath,
+      "--path",
+      "/templates/sms",
+      "--tags",
+      "sms,alert",
+    ]);
+
+    expect(added.exitCode).toBe(0);
+    expect(added.io.stdout).toHaveBeenCalledWith(
+      "Added document doc-004: SMS Alert",
+    );
+  });
+
+  it("in lỗi ra stderr khi thiếu --node", async () => {
+    const result = await execute(["list"]);
+    expect(result.exitCode).toBe(1);
+    expect(result.io.stderr).toHaveBeenCalledWith("node path is required");
+  });
 });
