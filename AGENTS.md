@@ -19,6 +19,14 @@ Requirements in short:
 Do not deliver one large `feat(week_N)` commit without logs/diffs unless the user explicitly
 asks for a single commit—and then evidence still belongs in the commit body and journal.
 
+## Commit author
+
+New commits must use **`trantuananh-17 <anhkyohauik17@gmail.com>`** as author and committer.
+Before any commit or push, follow the identity checks in
+[`.agents/skills/repository-commits/SKILL.md`](.agents/skills/repository-commits/SKILL.md).
+If Git is configured for another account, use `-c user.name=...` `-c user.email=...` on
+the commit command or ask the user to fix local config—do not commit under the wrong identity.
+
 ## Commit convention
 
 Before creating a commit, read:

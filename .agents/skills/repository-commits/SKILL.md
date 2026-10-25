@@ -17,6 +17,40 @@ For **`week_2` and later** folders, read and follow
 implementation**. Commit messages must cite evidence captured from that workflow
 (real test logs and `git diff` hunks), not after-the-fact summaries.
 
+## Commit author identity (required)
+
+Only **`trantuananh-17 <anhkyohauik17@gmail.com>`** may appear as author and committer on
+new commits in this repository. Do **not** commit as `giappham96tb`, Cursor, or any other
+identity.
+
+Before every commit (and before push when the user asks to publish):
+
+1. Read the identity Git will use:
+
+   ```bash
+   git var GIT_AUTHOR_IDENT
+   git var GIT_COMMITTER_IDENT
+   ```
+
+2. If either line is not exactly `trantuananh-17 <anhkyohauik17@gmail.com>`, **do not
+   commit**. Fix identity first:
+   - Prefer per-command flags (do not change global git config unless the user asks):
+
+     ```bash
+     git -c user.name=trantuananh-17 -c user.email=anhkyohauik17@gmail.com commit -F -
+     ```
+
+   - If recent commits on the branch still show the wrong author, stop and tell the user
+     to rewrite authors (rebase/amend) before pushing.
+
+3. After committing, verify:
+
+   ```bash
+   git log -1 --format="%an <%ae> | committer: %cn <%ce>"
+   ```
+
+Report the verified author line in the commit summary to the user.
+
 ## Required outcome
 
 1. Inspect the actual changed or staged files and determine the change's main

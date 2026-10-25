@@ -152,6 +152,9 @@ same deliverable.
 
 Before committing:
 
+0. Confirm author and committer are `trantuananh-17 <anhkyohauik17@gmail.com>` (see
+   repository-commits skill). Use `-c user.name` / `-c user.email` on the commit command if
+   local Git is set to another account.
 1. Inspect `git status` and the staged diff.
 2. Exclude unrelated user changes.
 3. Run checks appropriate to the affected project.
