@@ -36,6 +36,10 @@ const SEED_DOCUMENTS: Document[] = [
   },
 ];
 
+function normalizeTags(tags: string[]): string[] {
+  return [...new Set(tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))];
+}
+
 function detectMatchType(document: Document, normalizedQuery: string): SearchMatchType | null {
   if (document.title.toLowerCase().includes(normalizedQuery)) {
     return "title";
@@ -120,7 +124,7 @@ export class MockKBClient implements KBClient {
       title,
       content: input.content,
       nodePath,
-      tags: [...new Set(input.tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))],
+      tags: normalizeTags(input.tags),
     };
     this.nextNumericId += 1;
     this.documents.push(document);
