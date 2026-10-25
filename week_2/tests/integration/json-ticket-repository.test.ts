@@ -6,9 +6,9 @@ import {
   it,
 } from "vitest";
 import {
-  chmodSync,
   mkdtempSync,
   readFileSync,
+  readdirSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
@@ -89,13 +89,22 @@ describe("JsonTicketRepository", () => {
 
   it("báo lỗi khi không ghi được dữ liệu", () => {
     writeFileSync(dataFile, "[]\n", "utf8");
-    chmodSync(dataFile, 0o444);
-    const repository = new JsonTicketRepository(dataFile);
     const originalContent = readFileSync(dataFile, "utf8");
+    const failingRepository = new JsonTicketRepository(dataFile, {
+      renameSync: () => {
+        const error = new Error("mock rename failure") as NodeJS.ErrnoException;
+        error.code = "EACCES";
+        throw error;
+      },
+    });
 
-    expect(() => repository.save(createTicketFixture())).toThrow(
+    expect(() => failingRepository.save(createTicketFixture())).toThrow(
       "Cannot write ticket data",
     );
     expect(readFileSync(dataFile, "utf8")).toBe(originalContent);
+    const leftoverTempFiles = readdirSync(temporaryDirectory).filter((name) =>
+      name.includes(".tmp"),
+    );
+    expect(leftoverTempFiles).toEqual([]);
   });
 });

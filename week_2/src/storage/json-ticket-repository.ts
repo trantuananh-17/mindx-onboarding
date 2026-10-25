@@ -1,10 +1,4 @@
-import {
-  mkdirSync,
-  readFileSync,
-  renameSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import * as fs from "node:fs";
 import { dirname } from "node:path";
 
 import { StorageError } from "../domain/errors.ts";
@@ -40,11 +34,21 @@ function isNodeError(error: unknown): error is NodeJS.ErrnoException {
   return error instanceof Error && "code" in error;
 }
 
+export interface JsonTicketRepositoryOptions {
+  /** Test seam to simulate rename failure without OS-specific chmod behavior. */
+  renameSync?: (temporaryFile: string, filePath: string) => void;
+}
+
 export class JsonTicketRepository implements TicketRepository {
   private readonly filePath: string;
+  private readonly renameSync: (temporaryFile: string, filePath: string) => void;
 
-  constructor(filePath: string) {
+  constructor(
+    filePath: string,
+    options: JsonTicketRepositoryOptions = {},
+  ) {
     this.filePath = filePath;
+    this.renameSync = options.renameSync ?? fs.renameSync;
   }
 
   nextId(): number {
@@ -82,7 +86,7 @@ export class JsonTicketRepository implements TicketRepository {
     let content: string;
 
     try {
-      content = readFileSync(this.filePath, "utf8");
+      content = fs.readFileSync(this.filePath, "utf8");
     } catch (error) {
       if (isNodeError(error) && error.code === "ENOENT") {
         return [];
@@ -112,15 +116,15 @@ export class JsonTicketRepository implements TicketRepository {
     const temporaryFile = `${this.filePath}.${process.pid}.${Date.now()}.tmp`;
 
     try {
-      mkdirSync(directory, { recursive: true });
-      writeFileSync(
+      fs.mkdirSync(directory, { recursive: true });
+      fs.writeFileSync(
         temporaryFile,
         `${JSON.stringify(tickets, null, 2)}\n`,
         "utf8",
       );
-      renameSync(temporaryFile, this.filePath);
+      this.renameSync(temporaryFile, this.filePath);
     } catch (error) {
-      rmSync(temporaryFile, { force: true });
+      fs.rmSync(temporaryFile, { force: true });
       throw new StorageError("Cannot write ticket data", { cause: error });
     }
   }
