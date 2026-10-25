@@ -21,4 +21,19 @@ describe("createKBClient", () => {
     });
     expect(client).toBeInstanceOf(HttpKBClient);
   });
+
+  it("đọc KB_CLIENT và KB_API_URL từ môi trường", () => {
+    vi.stubEnv("KB_CLIENT", "http");
+    vi.stubEnv("KB_API_URL", "http://kb.local");
+
+    const client = createKBClient();
+    expect(client).toBeInstanceOf(HttpKBClient);
+  });
+
+  it("ném lỗi khi http mà thiếu KB_API_URL", () => {
+    vi.stubEnv("KB_API_URL", "");
+    expect(() => createKBClient({ mode: "http" })).toThrow(
+      "KB_API_URL is required",
+    );
+  });
 });
