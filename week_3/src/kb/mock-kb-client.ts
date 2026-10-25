@@ -1,8 +1,17 @@
-import type { Document, SearchResult } from "../domain/document.ts";
-import { ValidationError } from "../domain/errors.ts";
+import type {
+  AddDocumentInput,
+  Document,
+  SearchMatchType,
+  SearchResult,
+} from "../domain/document.ts";
+import { NotFoundError, ValidationError } from "../domain/errors.ts";
 import type { KBClient } from "./kb-client.ts";
 
-const SEED: Document[] = [
+function cloneDocument(document: Document): Document {
+  return { ...document, tags: [...document.tags] };
+}
+
+const SEED_DOCUMENTS: Document[] = [
   {
     id: "doc-001",
     title: "Customer Response Template",
@@ -27,11 +36,31 @@ const SEED: Document[] = [
   },
 ];
 
+function detectMatchType(document: Document, normalizedQuery: string): SearchMatchType | null {
+  if (document.title.toLowerCase().includes(normalizedQuery)) {
+    return "title";
+  }
+  if (document.content.toLowerCase().includes(normalizedQuery)) {
+    return "content";
+  }
+  if (document.tags.some((tag) => tag.includes(normalizedQuery))) {
+    return "tag";
+  }
+  return null;
+}
+
 export class MockKBClient implements KBClient {
-  private readonly documents = SEED.map((document) => ({
-    ...document,
-    tags: [...document.tags],
-  }));
+  private readonly documents: Document[];
+  private nextNumericId: number;
+
+  constructor(initialDocuments: Document[] = SEED_DOCUMENTS) {
+    this.documents = initialDocuments.map(cloneDocument);
+    this.nextNumericId =
+      initialDocuments.reduce((max, doc) => {
+        const match = /^doc-(\d+)$/.exec(doc.id);
+        return match ? Math.max(max, Number(match[1])) : max;
+      }, 0) + 1;
+  }
 
   async search(query: string, topK: number): Promise<SearchResult[]> {
     const normalizedQuery = query.trim().toLowerCase();
@@ -44,19 +73,9 @@ export class MockKBClient implements KBClient {
 
     const results: SearchResult[] = [];
     for (const document of this.documents) {
-      let matchType: SearchResult["matchType"] | null = null;
-      if (document.title.toLowerCase().includes(normalizedQuery)) {
-        matchType = "title";
-      } else if (document.content.toLowerCase().includes(normalizedQuery)) {
-        matchType = "content";
-      } else if (document.tags.some((tag) => tag.includes(normalizedQuery))) {
-        matchType = "tag";
-      }
+      const matchType = detectMatchType(document, normalizedQuery);
       if (matchType) {
-        results.push({
-          document: { ...document, tags: [...document.tags] },
-          matchType,
-        });
+        results.push({ document: cloneDocument(document), matchType });
       }
     }
 
