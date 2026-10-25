@@ -45,4 +45,16 @@ describe("HttpKBClient against KB API stub", () => {
       title: "HTTP FAQ",
     });
   });
+
+  it("trả lỗi JSON khi request không hợp lệ", async () => {
+    const response = await fetch(`${stub.baseUrl}/retrieve`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ docId: "missing" }),
+    });
+
+    expect(response.status).toBe(404);
+    const payload = (await response.json()) as { error: string };
+    expect(payload.error).toContain("not found");
+  });
 });
