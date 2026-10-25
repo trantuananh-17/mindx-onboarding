@@ -38,6 +38,15 @@ function parsePositiveInteger(
   return parsed;
 }
 
+function formatSearchLine(
+  id: string,
+  matchType: string,
+  title: string,
+  nodePath: string,
+): string {
+  return `${id} | ${matchType} | ${title} | ${nodePath}`;
+}
+
 function deriveTitleFromFile(filePath: string, content: string, explicit?: string): string {
   const fromFlag = explicit?.trim();
   if (fromFlag) {
@@ -85,7 +94,12 @@ export async function runKbCli(
 
         for (const result of results) {
           io.stdout(
-            `${result.document.id} | ${result.matchType} | ${result.document.title} | ${result.document.nodePath}`,
+            formatSearchLine(
+              result.document.id,
+              result.matchType,
+              result.document.title,
+              result.document.nodePath,
+            ),
           );
         }
         return 0;
