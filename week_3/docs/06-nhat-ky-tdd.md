@@ -99,5 +99,6 @@ Ba commit (hoặc một commit + phụ lục này nếu user yêu cầu gom):
 2. `feat(week_3): normalize slim KB search API results`
 3. `refactor(week_3): …` (bỏ qua nếu không refactor)
 
-**Lưu ý:** Lịch sử hiện tại gom stub + HTTP trong `5a0d437` — coi phụ lục + skill mới là
-chuẩn cho các thay đổi **tiếp theo**, không rewrite history cũ.
+**Git (2026-10-25):** Week 3 được commit lại theo chuỗi `test` → `feat`/`fix` → `refactor`
+từng slice (mock search → mock CRUD → CLI → HTTP → stub → docs). Xem
+`git log --oneline -- week_3` để đối chiếu từng vòng với `TDD evidence:` trong body.
