@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
+import { loadEnvFile } from "../env/load-env-file.ts";
 import { createKBClient } from "../kb/create-kb-client.ts";
+
+loadEnvFile();
 import { runKbCli } from "./run-kb-cli.ts";
 
 let exitCode = 1;

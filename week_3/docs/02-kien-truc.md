@@ -63,6 +63,8 @@ Response: `{ "document": Document }`
 | `KB_API_URL` | URL gốc | Bắt buộc khi `KB_CLIENT=http` |
 | `KB_STUB_PORT` | số port | Port cho `pnpm stub` (mặc định 3928) |
 
+File `.env` (xem `.env.example`) được nạp khi khởi động CLI/stub; biến đã có trong shell không bị ghi đè.
+
 ## Stub vs API production
 
 - **Stub** (`pnpm stub`): triển khai contract trên, backend in-memory (`MockKBClient`).

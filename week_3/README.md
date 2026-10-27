@@ -20,6 +20,29 @@ pnpm typecheck
 pnpm build
 ```
 
+## Biến môi trường
+
+Mẫu: [`.env.example`](.env.example). Tạo file local (không commit):
+
+```powershell
+Copy-Item .env.example .env
+```
+
+| Biến | Mặc định | Ý nghĩa |
+| --- | --- | --- |
+| `KB_CLIENT` | `mock` | `mock` hoặc `http` |
+| `KB_API_URL` | — | URL gốc KB API; bắt buộc khi `KB_CLIENT=http` |
+| `KB_STUB_PORT` | `3400` | Port cho `pnpm stub` |
+
+CLI và stub đọc `.env` trong thư mục `week_3` khi khởi động. Biến đã set trong shell vẫn ưu tiên hơn file.
+
+Ví dụ `.env` cho HTTP + stub:
+
+```env
+KB_CLIENT=http
+KB_API_URL=http://127.0.0.1:3400
+```
+
 ## Chạy CLI
 
 Mock (development):

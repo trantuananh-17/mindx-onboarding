@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
+import { loadEnvFile } from "../env/load-env-file.ts";
 import { startKbApiStub } from "./kb-api-stub.ts";
+
+loadEnvFile();
 
 const port = Number(process.env.KB_STUB_PORT ?? "3928");
 
@@ -13,3 +16,5 @@ console.log("Press Ctrl+C to stop.");
 process.on("SIGINT", () => {
   void stub.close().finally(() => process.exit(0));
 });
+  
+
